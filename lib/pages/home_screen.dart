@@ -1,4 +1,5 @@
 import 'package:app_cabecera/controller/get_data_controller.dart';
+import 'package:app_cabecera/pages/carrusel.dart';
 import 'package:app_cabecera/pages/details_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +28,12 @@ class _HomeScreenState extends State<HomeScreen>{
     return Obx(()=> 
     Scaffold(
       backgroundColor: Colors.green[50],
-      body: !getDataController.isLoading.value ? Stack(
+      body: SafeArea(child:!getDataController.isLoading.value ? Stack(
         children: [
+          Carrusel(),
           Positioned(
-            top: 150,
-            bottom: 100,
+            top: 280,
+            bottom: 40,
             width: width,
             child: Column(
               children: [
@@ -80,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen>{
             ),
           )
         ],
-      ):Center(child: CircularProgressIndicator()),));
+      ):Center(child: CircularProgressIndicator()),)));
   }
 
   Widget logoCanal(index){
