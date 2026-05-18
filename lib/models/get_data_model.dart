@@ -1,81 +1,82 @@
-import 'dart:convert';
-
-GetDataModel getDataModelFromJson(String str) => GetDataModel.fromJson(json.decode(str));
-
-String getDataModelToJson(GetDataModel data) => json.encode(data.toJson());
-
 class GetDataModel {
-    List<Result> results;
 
-    GetDataModel({
-        required this.results,
-    });
+  final List<Result> results;
 
-    factory GetDataModel.fromJson(Map<String, dynamic> json) => GetDataModel(
-        results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
+  GetDataModel({
+    required this.results,
+  });
+
+  factory GetDataModel.fromJson(List<dynamic> json) {
+
+    return GetDataModel(
+      results: json.map((e) => Result.fromJson(e)).toList(),
     );
-
-    Map<String, dynamic> toJson() => {
-        "results": List<dynamic>.from(results.map((x) => x.toJson())),
-    };
+  }
 }
 
 class Result {
-    int id;
-    String nombre;
-    String numeroDigital;
-    int numeroAnalogico;
-    String logo;
-    String? marcaDeco;
-    String? serieDeco;
-    String? proveedorNombre;
-    String? proveedorNumero;
-    String? estante;
-    String? info;
-    String? decoControl;
 
-    Result({
-        required this.id,
-        required this.nombre,
-        required this.numeroDigital,
-        required this.numeroAnalogico,
-        required this.logo,
-        required this.marcaDeco,
-        required this.serieDeco,
-        required this.proveedorNombre,
-        required this.proveedorNumero,
-        required this.estante,
-        required this.info,
-        required this.decoControl,
-    });
+  final String nombre;
+  final String logo;
+  final String numeroDigital;
+  final String numeroAnalogico;
+  final String marcaDeco;
+  final String serieDeco;
+  final String estante;
+  final String proveedorNombre;
+  final String proveedorNumero;
+  final String fotoInfo;
+  final String fotoDeco;
 
-    factory Result.fromJson(Map<String, dynamic> json) => Result(
-        id: json["id"],
-        nombre: json["nombre"],
-        numeroDigital: json["numeroDigital"],
-        numeroAnalogico: json["numeroAnalogico"],
-        logo: json["logo"],
-        marcaDeco: json["marca_deco"],
-        serieDeco: json["serie_deco"],
-        proveedorNombre: json["proveedor_nombre"],
-        proveedorNumero: json["proveedor_numero"],
-        estante: json["estante"],
-        info: json["info"],
-        decoControl: json["deco_control"],
+
+  Result({
+    required this.nombre,
+    required this.logo,
+    required this.numeroDigital,
+    required this.numeroAnalogico,
+    required this.marcaDeco,
+    required this.serieDeco,
+    required this.estante,
+    required this.proveedorNombre,
+    required this.proveedorNumero,
+    required this.fotoInfo,
+    required this.fotoDeco,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) {
+
+    return Result(
+
+      nombre: json['nombre'] ?? '',
+
+      logo: json['logo'] ?? '',
+
+      numeroDigital:
+          json['numeroDigital']?.toString() ?? '',
+
+      fotoInfo:
+          json['fotoInfo']?.toString() ?? '',
+
+      proveedorNumero:
+          json['proveedorNumero']?.toString() ?? '',
+
+      fotoDeco:
+          json['fotoDeco']?.toString() ?? '',
+
+      proveedorNombre:
+          json['proveedorNombre']?.toString() ?? '',
+
+      estante:
+          json['estante']?.toString() ?? '',
+
+      serieDeco:
+          json['serieDeco']?.toString() ?? '',
+
+      numeroAnalogico:
+          json['numeroAnalogico']?.toString() ?? '',
+
+      marcaDeco:
+          json['marcaDeco']?.toString() ?? '',
     );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "nombre": nombre,
-        "numeroDigital": numeroDigital,
-        "numeroAnalogico": numeroAnalogico,
-        "logo": logo,
-        "marca_deco": marcaDeco,
-        "serie_deco": serieDeco,
-        "proveedor_nombre": proveedorNombre,
-        "proveedor_numero": proveedorNumero,
-        "estante": estante,
-        "info": info,
-        "deco_control": decoControl,
-    };
+  }
 }

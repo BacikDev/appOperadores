@@ -38,6 +38,7 @@ dependencies:
   get: ^4.7.3
   dio: ^5.9.2
   carousel_slider: ^5.1.2
+  supabase_flutter: ^2.0.0
 
 dev_dependencies:
   flutter_test:

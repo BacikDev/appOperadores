@@ -112,7 +112,7 @@ return Positioned(
         ),
         child: Padding(
           padding: const EdgeInsets.only(left: 5, right: 5, top: 1, bottom: 1),
-          child: Text((getDataController.getDataModel.value.results[index].numeroDigital.toString() == '0.0') ? '--.-' : getDataController.getDataModel.value.results[index].numeroDigital.toString(),
+          child: Text(getDataController.getDataModel.value.results[index].numeroDigital.toString(),
           style: TextStyle(
             color: Colors.white,
             shadows: [
@@ -140,7 +140,7 @@ return Positioned(
         child: Padding(
           padding: const EdgeInsets.only(left: 5, right: 5, top: 1, bottom: 1),
           child: Text(
-          (getDataController.getDataModel.value.results[index].numeroAnalogico.toString() == '0') ? '--' : getDataController.getDataModel.value.results[index].numeroAnalogico.toString(),
+          getDataController.getDataModel.value.results[index].numeroAnalogico.toString(),
           style: TextStyle(
             color: Colors.white,
             shadows: [

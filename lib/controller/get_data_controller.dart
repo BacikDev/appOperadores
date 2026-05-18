@@ -1,22 +1,36 @@
-import 'dart:convert';
-import 'package:app_cabecera/models/get_data_model.dart';
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../models/get_data_model.dart';
 
 class GetDataController extends GetxController {
-  var isLoading = false.obs;
-  var getDataModel = GetDataModel(results: []).obs;
 
-  getDataFromApi() async {
-    isLoading.value = true;
+  RxBool isLoading = true.obs;
+
+  Rx<GetDataModel> getDataModel =
+      GetDataModel(results: []).obs;
+
+  Future<void> getDataFromApi() async {
+
     try {
-      var response = await Dio().get(
-          'http://192.168.0.142:90/bdAppCabecera/controller/canal.php?op=listar');
-      final datax = json.decode(response.data);
-      getDataModel.value = GetDataModel.fromJson(datax);
-      isLoading.value = false;
+
+      isLoading(true);
+
+      final response =
+          await Supabase.instance.client
+              .from('canal')
+              .select();
+
+      getDataModel.value =
+          GetDataModel.fromJson(response);
+
     } catch (e) {
-      print(e);
+
+      print('ERROR SUPABASE: $e');
+
+    } finally {
+
+      isLoading(false);
     }
   }
 }
