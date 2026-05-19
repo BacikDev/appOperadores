@@ -47,8 +47,11 @@ class CardImages extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: (){},
-          child: FadeInImage(placeholder: AssetImage('images/loading1.gif'), image: AssetImage(carruselImages.image),
-          fit: BoxFit.cover,),
+          child: FadeInImage(
+  placeholder: const AssetImage('images/loading1.gif'),
+  image: NetworkImage(carruselImages.image),
+  fit: BoxFit.cover,
+),
         ),
       ),
     );
