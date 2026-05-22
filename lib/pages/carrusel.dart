@@ -1,7 +1,11 @@
-import 'package:app_cabecera/controller/get_data_events.dart';
-import 'package:app_cabecera/models/get_events_model.dart';
+import 'package:app_cabecera/controller/carrusel_data_controller.dart';
+import 'package:app_cabecera/pages/details_events.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class Carrusel extends StatefulWidget {
   const Carrusel({super.key});
@@ -11,15 +15,25 @@ class Carrusel extends StatefulWidget {
 }
 
 class _CarruselState extends State<Carrusel> {
+  final getCarruselController = Get.put(GetCarruselController());
+
+  @override
+  void initState(){
+    getCarruselController.getDataFromApi();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+
+    return Obx(()=>
+    Scaffold(
       backgroundColor: Colors.blue[50],
-      body: Column(
+      body: SafeArea(child: !getCarruselController.isLoading.value ? Stack(
         children: [
-          CarouselSlider.builder(itemCount: carruselImages.length, itemBuilder: (context, index, realIndex){
-            final carruselImage = carruselImages[index];
-            return CardImages(carruselImages: carruselImages[index],);
+          CarouselSlider.builder(itemCount: getCarruselController.getCarruselModel.value.results.length, itemBuilder: (context, index, realIndex){
+            final carruselImage = getCarruselController.getCarruselModel.value.results[index];
+            return CardImages(carruselImage: carruselImage);
           }, options: CarouselOptions(
             height: 150.0,
             autoPlay: true,
@@ -29,15 +43,15 @@ class _CarruselState extends State<Carrusel> {
             scrollDirection: Axis.horizontal,
           ))
         ],
-      ),
-    );
+      ):Center(child: CircularProgressIndicator()),),
+    ));
   }
 }
 
 class CardImages extends StatelessWidget {
-  final Event carruselImages;
+  final carruselImage;
 
-  const CardImages({super.key, required this.carruselImages});
+  const CardImages({super.key, required this.carruselImage});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +60,12 @@ class CardImages extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
-          onTap: (){},
-          child: FadeInImage(
-  placeholder: const AssetImage('images/loading1.gif'),
-  image: NetworkImage(carruselImages.image),
+          onTap: (){
+            Navigator.push(context,
+            MaterialPageRoute(builder: (context) => MostrarEventos()));
+          },
+          child: CachedNetworkImage(
+  imageUrl: carruselImage.fondo,
   fit: BoxFit.cover,
 ),
         ),
