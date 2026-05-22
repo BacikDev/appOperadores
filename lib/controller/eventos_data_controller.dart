@@ -9,14 +9,16 @@ class GetEventsController extends GetxController{
   Rx<GetEventsModel> getEventsModel =
   GetEventsModel(results: []).obs;
 
-  Future<void> getDataFromApi()async{
+  Future<void> getDataFromApi(int deporte_id)async{
     try{
       isLoading(true);
 
       final response =
       await Supabase.instance.client
       .from('evento')
-      .select();
+      .select()
+      .eq('deporte_id', deporte_id)
+      .order('fecha', ascending: true);
 
       getEventsModel.value =
       GetEventsModel.fromJson(response);

@@ -9,7 +9,7 @@ class GetCarruselController extends GetxController{
   Rx<GetCarruselModel> getCarruselModel =
   GetCarruselModel(results: []).obs;
 
-  Future<void> getDataFromApi()async{
+  Future<void> getDataFromApi(String deporte)async{
     try{
       isLoading(true);
 

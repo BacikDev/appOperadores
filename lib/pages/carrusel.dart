@@ -19,7 +19,7 @@ class _CarruselState extends State<Carrusel> {
 
   @override
   void initState(){
-    getCarruselController.getDataFromApi();
+    getCarruselController.getDataFromApi('deporte');
     super.initState();
   }
 
@@ -51,7 +51,7 @@ class _CarruselState extends State<Carrusel> {
 class CardImages extends StatelessWidget {
   final carruselImage;
 
-  const CardImages({super.key, required this.carruselImage});
+  const CardImages({super.key, required this.carruselImage,});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,11 @@ class CardImages extends StatelessWidget {
         child: InkWell(
           onTap: (){
             Navigator.push(context,
-            MaterialPageRoute(builder: (context) => MostrarEventos()));
+            MaterialPageRoute(builder: (_) => MostrarEventos(
+              deporteId: carruselImage.id,
+              nombre: carruselImage.name, 
+              fondo: carruselImage.fondo, 
+            )));
           },
           child: CachedNetworkImage(
   imageUrl: carruselImage.fondo,
@@ -72,4 +76,5 @@ class CardImages extends StatelessWidget {
       ),
     );
   }
+
 }

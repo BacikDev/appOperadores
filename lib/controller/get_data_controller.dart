@@ -19,7 +19,8 @@ class GetDataController extends GetxController {
       final response =
           await Supabase.instance.client
               .from('canal')
-              .select();
+              .select()
+              .order('id', ascending: true);
 
       getDataModel.value =
           GetDataModel.fromJson(response);
