@@ -61,7 +61,7 @@ class _MostrarEventosState extends State<MostrarEventos>{
               color: const Color.fromARGB(255, 240, 240, 240),
               borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40))
             ),
-            child: Expanded(child: ListView.builder(
+            child: ListView.builder(
     itemCount: getEventsController.getEventsModel.value.results.length,
     itemBuilder: (context, index) {
       final e = getEventsController.getEventsModel.value.results[index];
@@ -133,7 +133,7 @@ class _MostrarEventosState extends State<MostrarEventos>{
         ),
       );
     },
-  )),
+  ),
           ))
       ],
     )
