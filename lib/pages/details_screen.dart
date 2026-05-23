@@ -20,7 +20,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.green[200],
+      backgroundColor: Colors.green[50],
       body: Stack(
         alignment: Alignment.center,
         children: [

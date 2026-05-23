@@ -40,7 +40,28 @@ class _MostrarEventosState extends State<MostrarEventos>{
     return Center(child: CircularProgressIndicator());
   }
 
-  return ListView.builder(
+  return Scaffold( 
+      backgroundColor: Colors.green[50],
+    body: Stack(
+      alignment: Alignment.center,
+      children: [
+        Positioned(
+          top: 20,
+          child: CachedNetworkImage(imageUrl: widget.fondo,
+          width: width,
+          height: 170,)),
+        flechaAtras(),
+        Positioned(
+          bottom: 0,
+          child: Container(
+            width: width,
+            height: height * 0.8,
+            padding: EdgeInsetsDirectional.only(top: 20, bottom: 80),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 240, 240, 240),
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40))
+            ),
+            child: Expanded(child: ListView.builder(
     itemCount: getEventsController.getEventsModel.value.results.length,
     itemBuilder: (context, index) {
       final e = getEventsController.getEventsModel.value.results[index];
@@ -68,20 +89,20 @@ class _MostrarEventosState extends State<MostrarEventos>{
                   Expanded(
                     child: Text(
                       e.fecha,
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       e.hora,
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       e.senal,
                       textAlign: TextAlign.end,
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -101,7 +122,10 @@ class _MostrarEventosState extends State<MostrarEventos>{
                     ),
                   ),
                   SizedBox(height: 4),
-                  Text(e.evento),
+                  Text(e.evento,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,)),
                 ],
               ),
             )
@@ -109,7 +133,12 @@ class _MostrarEventosState extends State<MostrarEventos>{
         ),
       );
     },
-  );
+  )),
+          ))
+      ],
+    )
+
+    );
 });
   }
 
