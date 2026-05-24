@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen>{
           Carrusel(),
           Positioned(
             top: 200,
-            bottom: 40,
+            bottom: 0,
             width: width,
             child: Column(
               children: [

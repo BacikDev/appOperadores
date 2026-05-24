@@ -9,6 +9,18 @@ class GetEventsController extends GetxController{
   Rx<GetEventsModel> getEventsModel =
   GetEventsModel(results: []).obs;
 
+  DateTime parseFechaHora(String fecha, String hora){
+
+    final partesFecha = fecha.split(' ');
+    final partesHora = hora.split(':');
+
+    return DateTime(
+      int.parse(partesFecha[1]),
+      int.parse(partesHora[0]),
+      int.parse(partesHora[1]),
+    );
+  }
+
   Future<void> getDataFromApi(int deporte_id)async{
     try{
       isLoading(true);
@@ -17,11 +29,20 @@ class GetEventsController extends GetxController{
       await Supabase.instance.client
       .from('evento')
       .select()
-      .eq('deporte_id', deporte_id)
-      .order('fecha', ascending: true);
+      .eq('deporte_id', deporte_id);
+
+      final model = GetEventsModel.fromJson(response);
+
+      model.results.sort((a,b){
+        final fechaA = parseFechaHora(a.fecha, a.hora);
+
+        final fechaB = parseFechaHora(b.fecha, b.hora);
+
+        return fechaA.compareTo(fechaB);
+      });
 
       getEventsModel.value =
-      GetEventsModel.fromJson(response);
+      model;
     }catch(e){
       print('ERROR SUPABASE: $e');
     }finally{

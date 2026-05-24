@@ -55,10 +55,10 @@ class _MostrarEventosState extends State<MostrarEventos>{
           bottom: 0,
           child: Container(
             width: width,
-            height: height * 0.8,
-            padding: EdgeInsetsDirectional.only(top: 20, bottom: 80),
+            height: height * 0.74,
+            padding: EdgeInsetsDirectional.only(top: 20, bottom: 0),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 240, 240, 240),
+              color: const Color.fromARGB(255, 145, 141, 157),
               borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40))
             ),
             child: ListView.builder(
