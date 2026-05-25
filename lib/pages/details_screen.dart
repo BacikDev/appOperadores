@@ -1,3 +1,4 @@
+import 'package:app_cabecera/pages/pantalla_fullscreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -49,7 +50,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40))
-              ),
+              ),child: SingleChildScrollView(
               child: Padding(padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
@@ -164,20 +165,42 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   Padding(padding: const EdgeInsets.all(1),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: width * 0.45,
-                        child: CachedNetworkImage(imageUrl: widget.fotoDeco,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url)=> Center(
-                        child: CircularProgressIndicator(),)))
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => FullScreenImage(
+                                imageUrl: widget.fotoDeco,
+                              ),
+                            ),
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: widget.fotoDeco,
+                          width: width * 0.45,
+                          fit: BoxFit.cover,
+                        ),
+                      )
                         ,
                         //IMAGEN INFO TECNICA
-                      SizedBox(
-                        width: width * 0.45,
-                        child: CachedNetworkImage(imageUrl: widget.fotoInfo,  
-                        fit: BoxFit.cover,
-                        placeholder: (context, url)=> Center(
-                        child: CircularProgressIndicator(),)))
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => FullScreenImage(
+                                imageUrl: widget.fotoInfo,
+                              ),
+                            ),
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: widget.fotoInfo,
+                          width: width * 0.45,
+                          fit: BoxFit.cover,
+                        ),
+                      )
                         ,
                     ],
                     //BOTON WHATSAPP
@@ -194,7 +217,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 
               ),),
             ))
-        ],
+      )],
       ),
     );
   }
