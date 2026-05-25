@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsScreen extends StatefulWidget {
   final heroTag;
@@ -8,7 +9,11 @@ class DetailsScreen extends StatefulWidget {
   final serie;
   final estante;
   final proveedorNombre;
-  const DetailsScreen({super.key,this.heroTag, this.canalLogo, this.deco, this.estante,this.serie,this.proveedorNombre});
+  final numeroAnalogico;
+  final numeroDigital;
+  final fotoDeco;
+  final fotoInfo;
+  const DetailsScreen({super.key,this.heroTag, this.canalLogo, this.deco, this.estante,this.serie,this.proveedorNombre, this.numeroAnalogico,this.numeroDigital, this.fotoDeco, this.fotoInfo});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -34,8 +39,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
           child: CircularProgressIndicator(),)))
           ),
           flechaAtras(),
-          numeroAnalogico(),
           numeroDigital(),
+          numeroAnalogico(),
           Positioned(
             bottom: 0,
             child: Container(
@@ -134,8 +139,59 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),),
                       )
                     ],
-                  ),)
+                  ),),
+                  Padding(padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: width * 0.5,
+                        child: Text('Deco y Control:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),),
+                      ),
+                      Container(
+                        child: Text('Inf. Técnica',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),),
+                      )
+                    ],
+                  ),),
+                  //IMAGEN DECO CONTROL
+                  Padding(padding: const EdgeInsets.all(1),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: width * 0.45,
+                        child: CachedNetworkImage(imageUrl: widget.fotoDeco,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url)=> Center(
+                        child: CircularProgressIndicator(),)))
+                        ,
+                        //IMAGEN INFO TECNICA
+                      SizedBox(
+                        width: width * 0.45,
+                        child: CachedNetworkImage(imageUrl: widget.fotoInfo,  
+                        fit: BoxFit.cover,
+                        placeholder: (context, url)=> Center(
+                        child: CircularProgressIndicator(),)))
+                        ,
+                    ],
+                    //BOTON WHATSAPP
+                  ),),ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                        ),  
+                        onPressed: abrirWhatsapp, 
+                        icon: Icon(Icons.message, color: Colors.white,),
+                        label: Text('Whatsapp', style: TextStyle(color: Colors.white),
+                    )
+                  )
                 ],
+                
               ),),
             ))
         ],
@@ -154,7 +210,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
         onPressed: (){
           Navigator.pop(context);
         },
-      )            
+      ),
+                  
     );
   }
 
@@ -170,7 +227,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         child: Padding(
           padding: const EdgeInsets.only(left: 5, right: 5, top: 1, bottom: 1),
           child: Text(
-          '24.2',
+          widget.numeroDigital,
           style: TextStyle(
             color: Colors.white,
             shadows: [
@@ -198,7 +255,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         child: Padding(
           padding: const EdgeInsets.only(left: 5, right: 5, top: 1, bottom: 1),
           child: Text(
-          '24',
+          widget.numeroAnalogico,
           style: TextStyle(
             color: Colors.white,
             shadows: [
@@ -216,4 +273,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
+Future<void> abrirWhatsapp() async{
+  final numero = '5493705406848';
+  final mensaje = 'Hola, necesito información';
+
+  final uri = Uri.parse(
+    'whatsapp://send?phone=$numero&text=$mensaje'
+  );
+
+  try{
+    await launchUrl(uri,
+    mode: LaunchMode.externalApplication);
+  }catch(e){
+    print('ERROR WHATSAPP: $e');
+  }
+} 
 }

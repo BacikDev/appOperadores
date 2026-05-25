@@ -71,6 +71,10 @@ class _HomeScreenState extends State<HomeScreen>{
                               serie: getDataController.getDataModel.value.results[index].serieDeco,
                               estante: getDataController.getDataModel.value.results[index].estante,
                               proveedorNombre: getDataController.getDataModel.value.results[index].proveedorNombre,
+                              numeroAnalogico: getDataController.getDataModel.value.results[index].numeroAnalogico,
+                              numeroDigital: getDataController.getDataModel.value.results[index].numeroDigital,
+                              fotoDeco: getDataController.getDataModel.value.results[index].fotoDeco,
+                              fotoInfo: getDataController.getDataModel.value.results[index].fotoInfo,
                             )));
                           },
                         ),
