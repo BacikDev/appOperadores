@@ -41,7 +41,7 @@ class _CarruselState extends State<Carrusel> {
             enlargeCenterPage: true,
             autoPlayInterval: Duration(seconds: 5),
             scrollDirection: Axis.horizontal,
-          ))
+          )),
         ],
       ):Center(child: CircularProgressIndicator()),),
     ));

@@ -28,9 +28,32 @@ class _HomeScreenState extends State<HomeScreen>{
     return Obx(()=> 
     Scaffold(
       backgroundColor: Colors.green[50],
+      appBar: AppBar(
+        backgroundColor: Colors.green[50],
+        elevation: 0,
+        centerTitle: true,
+        title: Text('Eventos Deportivos',
+        style: TextStyle(
+          fontWeight: FontWeight.bold
+        ),),
+      ),
       body: SafeArea(child:!getDataController.isLoading.value ? Stack(
         children: [
           Carrusel(),
+          Padding(padding: const EdgeInsets.only(top: 165, left: 30),
+          child: Row(
+            children: [
+              Icon(Icons.live_tv,
+              color: Colors.deepPurple,
+              size: 28,),
+              SizedBox( width: 10,),
+              Text('Canales Analógicos y Digitales',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),),
+            ]
+          ),),
           Positioned(
             top: 200,
             bottom: 0,

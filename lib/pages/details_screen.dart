@@ -207,6 +207,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),),ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 10)
                         ),  
                         onPressed: abrirWhatsapp, 
                         icon: Icon(Icons.message, color: Colors.white,),
