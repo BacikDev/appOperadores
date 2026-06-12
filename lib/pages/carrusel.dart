@@ -19,7 +19,7 @@ class _CarruselState extends State<Carrusel> {
 
   @override
   void initState(){
-    getCarruselController.getDataFromApi('deporte');
+    getCarruselController.getDataFromApi('banner');
     super.initState();
   }
 

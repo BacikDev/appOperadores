@@ -4,6 +4,7 @@ import 'package:app_cabecera/pages/details_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:app_cabecera/pages/mini_sensor_card.dart';
 
 class HomeScreen extends StatefulWidget{
   const HomeScreen({super.key});
@@ -35,25 +36,34 @@ class _HomeScreenState extends State<HomeScreen>{
         title: Text('Eventos Deportivos',
         style: TextStyle(
           fontWeight: FontWeight.bold
-        ),),
+      ),),
       ),
       body: SafeArea(child:!getDataController.isLoading.value ? Stack(
         children: [
           Carrusel(),
-          Padding(padding: const EdgeInsets.only(top: 165, left: 30),
-          child: Row(
-            children: [
-              Icon(Icons.live_tv,
-              color: Colors.deepPurple,
-              size: 28,),
-              SizedBox( width: 10,),
-              Text('Canales Analógicos y Digitales',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),),
-            ]
-          ),),
+       
+          Padding(
+  padding: const EdgeInsets.only(top: 165, left: 20, right: 12),
+  child: Row(
+    children: [
+      const Icon(
+        Icons.live_tv,
+        color: Colors.deepPurple,
+        size: 28,
+      ),
+      const SizedBox(width: 5),
+      const Text(
+        'Grilla de Canales',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      const Spacer(),
+      const MiniSensorCard(),
+    ],
+  ),
+),
           Positioned(
             top: 200,
             bottom: 0,
@@ -93,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen>{
                               deco: getDataController.getDataModel.value.results[index].marcaDeco,
                               serie: getDataController.getDataModel.value.results[index].serieDeco,
                               estante: getDataController.getDataModel.value.results[index].estante,
+                              proveedorNumero: getDataController.getDataModel.value.results[index].proveedorNumero,
                               proveedorNombre: getDataController.getDataModel.value.results[index].proveedorNombre,
                               numeroAnalogico: getDataController.getDataModel.value.results[index].numeroAnalogico,
                               numeroDigital: getDataController.getDataModel.value.results[index].numeroDigital,
@@ -113,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen>{
   }
 
   Widget logoCanal(index){
-return Positioned(
+  return Positioned(
   child: ClipRRect(
   borderRadius: BorderRadius.all(Radius.circular(25)),
   child: Hero(

@@ -1,5 +1,6 @@
 import 'package:app_cabecera/custom/configurations.dart';
 import 'package:app_cabecera/pages/home_screen.dart';
+import 'package:app_cabecera/pages/sensor_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

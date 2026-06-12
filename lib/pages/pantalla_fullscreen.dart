@@ -14,7 +14,7 @@ class FullScreenImage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 161, 159, 173),
+      backgroundColor: const Color.fromARGB(255, 243, 255, 246),
 
       body: GestureDetector(
 

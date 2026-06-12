@@ -115,7 +115,7 @@ class _MostrarEventosState extends State<MostrarEventos>{
               child: Column(
                 children: [
                   Text(
-                    e.deporte_evento ?? '',
+                    e.deporte_evento,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,

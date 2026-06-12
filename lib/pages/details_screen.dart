@@ -14,7 +14,8 @@ class DetailsScreen extends StatefulWidget {
   final numeroDigital;
   final fotoDeco;
   final fotoInfo;
-  const DetailsScreen({super.key,this.heroTag, this.canalLogo, this.deco, this.estante,this.serie,this.proveedorNombre, this.numeroAnalogico,this.numeroDigital, this.fotoDeco, this.fotoInfo});
+  final proveedorNumero;
+  const DetailsScreen({super.key,this.heroTag, this.canalLogo, this.deco, this.estante,this.serie,this.proveedorNombre, this.proveedorNumero,this.numeroAnalogico,this.numeroDigital, this.fotoDeco, this.fotoInfo});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -204,7 +205,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ,
                     ],
                     //BOTON WHATSAPP
-                  ),),ElevatedButton.icon(
+                  ),),SizedBox(height: 20,),
+                      ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           padding: EdgeInsets.symmetric(horizontal: 80, vertical: 10)
@@ -298,7 +300,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
 Future<void> abrirWhatsapp() async{
-  final numero = '5493705406848';
+  final numero = widget.proveedorNumero;
   final mensaje = 'Hola, necesito información';
 
   final uri = Uri.parse(
