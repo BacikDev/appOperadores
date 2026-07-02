@@ -1,5 +1,6 @@
 import 'package:app_cabecera/custom/configurations.dart';
 import 'package:app_cabecera/pages/bottom_navigattion_bar.dart';
+import 'package:app_cabecera/pages/canales_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,7 +27,7 @@ class _MyAppState extends State<MyApp>{
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const MainNavigationScreen(),
+      home: CanalesScreen(),
     );
   }
 }

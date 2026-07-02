@@ -1,4 +1,3 @@
-import 'package:app_cabecera/pages/details_events.dart';
 import 'package:app_cabecera/pages/farmacias_screen.dart';
 import 'package:app_cabecera/pages/home_screen.dart';
 import 'package:app_cabecera/pages/sensor_card.dart';
@@ -20,7 +19,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   late final List<Widget> screens = [
   const HomeScreen(),
-  const CanalesScreen(),
   FarmaciasScreen(),
   const PendientesScreen(),
 ];
@@ -278,17 +276,6 @@ class _MenuItem extends StatelessWidget {
   ),
 ),
       onTap: onTap,
-    );
-  }
-}
-
-class CanalesScreen extends StatelessWidget {
-  const CanalesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Canales"),
     );
   }
 }
