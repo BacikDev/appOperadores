@@ -35,7 +35,7 @@ class _CarruselState extends State<Carrusel> {
             final carruselImage = getCarruselController.getCarruselModel.value.results[index];
             return CardImages(carruselImage: carruselImage);
           }, options: CarouselOptions(
-            height: 150.0,
+            height: 100,
             autoPlay: true,
             autoPlayCurve: Curves.easeInOut,
             enlargeCenterPage: true,

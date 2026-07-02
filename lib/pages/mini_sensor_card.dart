@@ -44,7 +44,7 @@ class _MiniSensorCardState extends State<MiniSensorCard> {
           Get.to(() => const SensorDashboardPage());
         },
         child: Container(
-          height: 36,
+          height: 30,
           padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.95),
@@ -72,7 +72,7 @@ class _MiniSensorCardState extends State<MiniSensorCard> {
               Text(
                 '${lectura.temperatura.toStringAsFixed(1)}°',
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
