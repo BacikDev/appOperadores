@@ -1,5 +1,5 @@
 import 'package:app_cabecera/controller/carrusel_data_controller.dart';
-import 'package:app_cabecera/pages/details_events.dart';
+import 'package:app_cabecera/pages/sports_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +62,7 @@ class CardImages extends StatelessWidget {
         child: InkWell(
           onTap: (){
             Navigator.push(context,
-            MaterialPageRoute(builder: (_) => MostrarEventos(
+            MaterialPageRoute(builder: (_) => SportsScreen(
               deporteId: carruselImage.id,
               nombre: carruselImage.name, 
               fondo: carruselImage.fondo, 

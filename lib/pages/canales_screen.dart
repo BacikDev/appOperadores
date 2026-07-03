@@ -51,11 +51,13 @@ class _CanalesScreenState extends State<CanalesScreen> {
           elevation: 0,
           centerTitle: true,
           title: const Text(
-            'El Líder Junto a vos',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+              'Grilla de Canales',
+              style: TextStyle(
+                fontSize: 27,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF111827),
+              ),
             ),
-          ),
         ),
         body: SafeArea(
           child: getDataController.isLoading.value
@@ -70,20 +72,6 @@ class _CanalesScreenState extends State<CanalesScreen> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(
-                            Icons.live_tv,
-                            color: Colors.deepPurple,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 5),
-                          const Text(
-                            'Grilla de Canales',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
                           Expanded(
                             child: SizedBox(
                               height: 38,
