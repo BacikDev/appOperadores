@@ -1,8 +1,12 @@
+import 'package:app_cabecera/controller/WeatherController.dart';
 import 'package:app_cabecera/controller/sensor_controller.dart';
 import 'package:app_cabecera/pages/canales_screen.dart';
 import 'package:app_cabecera/pages/farmacias_screen.dart';
+import 'package:app_cabecera/pages/pendientes_screen.dart';
+import 'package:app_cabecera/pages/reclamos_screen.dart';
 import 'package:app_cabecera/pages/sensor_card.dart';
 import 'package:app_cabecera/pages/sports_screen.dart';
+import 'package:app_cabecera/pages/weather_screen.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,6 +20,7 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final SensorController sensorController = Get.put(SensorController());
+  final WeatherController weatherController = Get.put(WeatherController());
 
 @override
 void initState() {
@@ -28,9 +33,7 @@ void initState() {
     DashboardHomeScreen(scaffoldKey: scaffoldKey),
      CanalesScreen(),
      SportsScreen(deporteId: null, nombre: null, fondo: null,),
-     FarmaciasScreen(),
-     PendientesScreen(),
-  
+     FarmaciasScreen(),  
   ];
 
   void onItemTapped(int index) {
@@ -174,13 +177,27 @@ class DashboardHomeScreen extends StatelessWidget {
                     icon: Icons.assignment_turned_in_rounded,
                     title: 'Pendientes',
                     color: Color(0xFFFFA726),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PendientesScreen(),
+                        ),
+                      );
+                    },
                   ),
                   _ModuleCard(
                     icon: Icons.report_problem_rounded,
                     title: 'Reclamos',
                     color: Color(0xFFFF4F81),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ReclamosScreen(),
+                        ),
+                      );
+                    },
                   ),
                   _ModuleCard(
                     icon: Icons.videocam_rounded,
@@ -298,39 +315,101 @@ class _Header extends StatelessWidget {
 class _WeatherMiniCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final WeatherController weatherController = Get.find<WeatherController>();
+
+    return Obx(() {
+      if (weatherController.isLoading.value) {
+        return _weatherContainer(
+          child: const SizedBox(
+            width: 145,
+            height: 55,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF8A5CFF),
+                strokeWidth: 2,
+              ),
+            ),
+          ),
+        );
+      }
+
+      final ultima = weatherController.ultimaActualizacion.value;
+
+      final hora = ultima == null
+          ? ''
+          : '${ultima.hour.toString().padLeft(2, '0')}:${ultima.minute.toString().padLeft(2, '0')}';
+
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const WeatherScreen(),
+              ),
+            );
+          },
+          child: _weatherContainer(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  weatherController.iconoClima,
+                  color: Colors.white,
+                  size: 34,
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${weatherController.temperatura.value.round()}°C',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 125,
+                      child: Text(
+                        weatherController.descripcion.value,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(0xFF9BA6C7),
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '💧 ${weatherController.humedad.value}%  🌬 ${weatherController.viento.value.toStringAsFixed(0)} km/h',
+                      style: const TextStyle(
+                        color: Color(0xFF9BA6C7),
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _weatherContainer({required Widget child}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFF101A2E),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white10),
       ),
-      child: const Row(
-        children: [
-          Icon(Icons.cloud_queue_rounded, color: Colors.white, size: 34),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '23°C',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
-              ),
-              Text(
-                'Parcialmente nublado',
-                style: TextStyle(
-                  color: Color(0xFF9BA6C7),
-                  fontSize: 11,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      child: child,
     );
   }
 }
@@ -827,23 +906,6 @@ class _MenuItem extends StatelessWidget {
         ),
       ),
       onTap: onTap,
-    );
-  }
-}
-
-class PendientesScreen extends StatelessWidget {
-  const PendientesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFF050B18),
-      body: Center(
-        child: Text(
-          'Pendientes',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
     );
   }
 }

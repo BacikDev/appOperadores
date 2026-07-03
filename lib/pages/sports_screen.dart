@@ -384,7 +384,7 @@ String obtenerHora(String hora) {
 
                                   return Container(
                                     margin: const EdgeInsets.only(bottom: 12),
-                                    padding: const EdgeInsets.all(12),
+                                    padding: const EdgeInsets.all(1),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(22),
@@ -487,7 +487,7 @@ String obtenerHora(String hora) {
 
                                         Container(
                                           width: 88,
-                                          height: 88,
+                                          height: 110,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius:
@@ -500,11 +500,11 @@ String obtenerHora(String hora) {
                                               child: e.canales.isNotEmpty
                                                   ? Wrap(
                                                       spacing: 6,
-                                                      runSpacing: 6,
+                                                      runSpacing: -10,
                                                       alignment: WrapAlignment.center,
                                                       children: e.canales.map((canal) {
                                                         return SizedBox(
-                                                          width: 40,
+                                                          width: 100,
                                                           height: 40,
                                                           child: CachedNetworkImage(
                                                             imageUrl: canal.logo,
