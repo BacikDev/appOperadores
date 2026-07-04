@@ -1,5 +1,6 @@
 import 'package:app_cabecera/controller/WeatherController.dart';
 import 'package:app_cabecera/controller/sensor_controller.dart';
+import 'package:app_cabecera/pages/blue_iris_screen.dart';
 import 'package:app_cabecera/pages/canales_screen.dart';
 import 'package:app_cabecera/pages/farmacias_screen.dart';
 import 'package:app_cabecera/pages/pendientes_screen.dart';
@@ -203,7 +204,14 @@ class DashboardHomeScreen extends StatelessWidget {
                     icon: Icons.videocam_rounded,
                     title: 'Cámaras',
                     color: Color(0xFF00D1C1),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>  BlueIrisScreen(),
+                        ),
+                      );
+                    },
                   ),
                   _ModuleCard(
                     icon: Icons.folder_rounded,

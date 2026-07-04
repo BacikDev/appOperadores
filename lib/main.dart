@@ -1,11 +1,15 @@
 import 'package:app_cabecera/custom/configurations.dart';
+import 'package:app_cabecera/pages/blue_iris_screen.dart';
 import 'package:app_cabecera/pages/bottom_navigattion_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   await Supabase.initialize(
   url:Configurations.mSupabaseUrl,
   anonKey:Configurations.mSupabaseKey,
