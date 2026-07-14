@@ -15,86 +15,58 @@ class BlueIrisAllCamerasCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final previewCameras = cameras.take(4).toList();
+
     return GestureDetector(
       onTap: () {
-        Get.to(
-          () => BlueIrisAllCamerasFullscreen(
-            cameras: cameras,
-          ),
-        );
+        Get.to(() => BlueIrisAllCamerasFullscreen(cameras: cameras));
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(10, 8, 10, 4),
-              child: Text(
-                '+All cameras',
-                style: TextStyle(
-                  color: Color(0xFF666666),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          color: Colors.black,
+          child: Stack(
+            children: [
+              GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                itemCount: previewCameras.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
                 ),
-              ),
-            ),
-            Expanded(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(
-                    BlueIrisConfig.allCamerasImageUrl(),
+                itemBuilder: (context, index) {
+                  final cam = previewCameras[index];
+
+                  return Image.network(
+                    BlueIrisConfig.imageUrl(cam.shortName),
                     headers: BlueIrisConfig.authHeaders(),
                     fit: BoxFit.cover,
                     gaplessPlayback: true,
                     errorBuilder: (_, __, ___) {
-                      return Container(
-                        color: Colors.black87,
-                        child: const Icon(
-                          Icons.grid_view,
-                          color: Colors.white,
-                          size: 42,
-                        ),
-                      );
+                      return Container(color: Colors.black87);
                     },
-                  ),
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: Container(
-                      width: 10,
-                      color: const Color(0xFF436B9A),
-                    ),
-                  ),
-                  Positioned(
-                    right: 8,
-                    bottom: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      color: Colors.black.withValues(alpha: 0.55),
-                      child: Text(
-                        '${cameras.length} cámaras',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
-          ],
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  color: Colors.black.withValues(alpha: 0.65),
+                  child: Text(
+                    '+All cameras · ${cameras.length} cámaras',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

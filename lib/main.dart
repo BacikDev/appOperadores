@@ -1,5 +1,4 @@
 import 'package:app_cabecera/custom/configurations.dart';
-import 'package:app_cabecera/pages/blue_iris_screen.dart';
 import 'package:app_cabecera/pages/bottom_navigattion_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +11,7 @@ Future<void> main() async{
   MediaKit.ensureInitialized();
   await Supabase.initialize(
   url:Configurations.mSupabaseUrl,
+  // ignore: deprecated_member_use
   anonKey:Configurations.mSupabaseKey,
   );
   WidgetsFlutterBinding.ensureInitialized();

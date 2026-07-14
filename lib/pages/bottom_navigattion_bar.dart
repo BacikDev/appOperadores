@@ -5,11 +5,16 @@ import 'package:app_cabecera/pages/canales_screen.dart';
 import 'package:app_cabecera/pages/farmacias_screen.dart';
 import 'package:app_cabecera/pages/pendientes_screen.dart';
 import 'package:app_cabecera/pages/reclamos_screen.dart';
+import 'package:app_cabecera/pages/security_cameras_screen.dart';
 import 'package:app_cabecera/pages/sensor_card.dart';
 import 'package:app_cabecera/pages/sports_screen.dart';
+import 'package:app_cabecera/pages/transmisiones_screen.dart';
 import 'package:app_cabecera/pages/weather_screen.dart.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -19,84 +24,65 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final SensorController sensorController = Get.put(SensorController());
   final WeatherController weatherController = Get.put(WeatherController());
 
-@override
-void initState() {
-  super.initState();
-  sensorController.cargarDatos();
-}
-  int currentIndex = 0;
-
-  late final List<Widget> screens = [
-    DashboardHomeScreen(scaffoldKey: scaffoldKey),
-     CanalesScreen(),
-     SportsScreen(deporteId: null, nombre: null, fondo: null,),
-     FarmaciasScreen(),  
-  ];
-
-  void onItemTapped(int index) {
-    if (index == 4) {
-      scaffoldKey.currentState?.openEndDrawer();
-      return;
-    }
-
-    if (index < screens.length) {
-      setState(() {
-        currentIndex = index;
-      });
-    }
-  }
-
-  void openPage(int index) {
-    Navigator.pop(context);
-
-    if (index < screens.length) {
-      setState(() {
-        currentIndex = index;
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    sensorController.cargarDatos();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: const Color.fromARGB(255, 174, 196, 242),
-      endDrawer: RightSideMenu(onSelectPage: openPage),
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens,
-      ),
-      bottomNavigationBar: _BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: onItemTapped,
-      ),
-    );
+    return const DashboardHomeScreen();
   }
 }
 
 class DashboardHomeScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  const DashboardHomeScreen({super.key});
 
-  const DashboardHomeScreen({
-    super.key,
-    required this.scaffoldKey,
-  });
+  void _openScreen(BuildContext context, Widget screen) {
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 350),
+      reverseTransitionDuration: const Duration(milliseconds: 250),
+      pageBuilder: (_, animation, __) => screen,
+      transitionsBuilder: (_, animation, __, child) {
+        final offsetAnimation = Tween<Offset>(
+          begin: const Offset(0.08, 0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          ),
+        );
+      },
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF050B18),
       body: SafeArea(
-  child: Padding(
-    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-              _Header(scaffoldKey: scaffoldKey),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 4, 10, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _Header(),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,12 +98,11 @@ class DashboardHomeScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 2),
                       Text(
                         'Panel de control operativo',
                         style: TextStyle(
                           color: Color(0xFF9BA6C7),
-                          fontSize: 15,
+                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -126,7 +111,7 @@ class DashboardHomeScreen extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 3),
+              const SizedBox(height: 6),
 
               const Text(
                 'MÓDULOS',
@@ -137,103 +122,100 @@ class DashboardHomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 5),
+              const SizedBox(height: 6),
 
-              GridView.count(
-                crossAxisCount: 3,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: 1.2,
-                children: [
-                  _ModuleCard(
-                    icon: Icons.live_tv_rounded,
-                    title: 'Canales',
-                    color: Color(0xFF1296FF),
-                    onTap: () {
-                      final state = context.findAncestorStateOfType<_MainNavigationScreenState>();
-                      state?.onItemTapped(1);
-                    },
-                  ),
-                  _ModuleCard(
-                    icon: Icons.sports_soccer_rounded,
-                    title: 'Eventos',
-                    color: Color(0xFF20D489),
-                    onTap: () {
-                      final state = context.findAncestorStateOfType<_MainNavigationScreenState>();
-                      state?.onItemTapped(2);
-                    },
-                  ),
-                  _ModuleCard(
-                    icon: Icons.local_pharmacy_rounded,
-                    title: 'Farmacias',
-                    color: Color(0xFF8A5CFF),
-                    onTap: () {
-                      final state = context.findAncestorStateOfType<_MainNavigationScreenState>();
-                      state?.onItemTapped(3);
-                    },
-                  ),
-                  _ModuleCard(
-                    icon: Icons.assignment_turned_in_rounded,
-                    title: 'Pendientes',
-                    color: Color(0xFFFFA726),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const PendientesScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _ModuleCard(
-                    icon: Icons.report_problem_rounded,
-                    title: 'Reclamos',
-                    color: Color(0xFFFF4F81),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ReclamosScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _ModuleCard(
-                    icon: Icons.videocam_rounded,
-                    title: 'Cámaras',
-                    color: Color(0xFF00D1C1),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>  BlueIrisScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _ModuleCard(
-                    icon: Icons.folder_rounded,
-                    title: 'Contenido',
-                    color: Color(0xFF00D1C1),
-                    onTap: () {},
-                  ),
-                  _ModuleCard(
-                    icon: Icons.chat_bubble_outline_rounded,
-                    title: 'Sutítulados',
-                    color: Color(0xFF2979FF),
-                    onTap: () {},
-                  ),
-                ],
+              Expanded(
+  flex: 3,
+  child: LayoutBuilder(
+    builder: (context, constraints) {
+      return GridView.count(
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 1.08,
+        children: [
+          _ModuleCard(
+            icon: Icons.live_tv_rounded,
+            title: 'Canales',
+            color: const Color(0xFF1296FF),
+            onTap: () => _openScreen(context, CanalesScreen()),
+          ),
+          _ModuleCard(
+            icon: Icons.sports_soccer_rounded,
+            title: 'Eventos',
+            color: const Color(0xFF20D489),
+            onTap: () => _openScreen(
+              context,
+              SportsScreen(
+                deporteId: null,
+                nombre: null,
+                fondo: null,
               ),
+            ),
+          ),
+          _ModuleCard(
+            icon: Icons.local_pharmacy_rounded,
+            title: 'Farmacias',
+            color: const Color(0xFF8A5CFF),
+            onTap: () => _openScreen(context, FarmaciasScreen()),
+          ),
+          _ModuleCard(
+            icon: Icons.assignment_turned_in_rounded,
+            title: 'Pendientes',
+            color: const Color(0xFFFFA726),
+            onTap: () => _openScreen(
+              context,
+              const PendientesScreen(),
+            ),
+          ),
+          _ModuleCard(
+            icon: Icons.report_problem_rounded,
+            title: 'Reclamos',
+            color: const Color(0xFFFF4F81),
+            onTap: () => _openScreen(
+              context,
+              const ReclamosScreen(),
+            ),
+          ),
+          _ModuleCard(
+            icon: Icons.videocam_rounded,
+            title: 'Cámaras',
+            color: const Color(0xFF00D1C1),
+            onTap: () => _openScreen(context, BlueIrisScreen()),
+          ),
+          _ModuleCard(
+            icon: Icons.videocam_rounded,
+            title: 'Cámaras Seguridad',
+            color: const Color(0xFF00D1C1),
+            onTap: () => _openScreen(context, SecurityCamerasScreen()),
+          ),
+          _ModuleCard(
+          icon: Icons.live_tv_rounded,
+          title: 'En vivo',
+          color: const Color(0xFF8B5CFF),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const TransmisionesScreen(),
+              ),
+            );
+          },
+        ),
+          
+        ],
+      );
+    },
+  ),
+),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 8),
 
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Expanded(child: _OperatorCard()),
-                  SizedBox(width: 14),
+                  SizedBox(width: 10),
                   Expanded(child: _CabeceraCard()),
                 ],
               ),
@@ -246,28 +228,20 @@ class DashboardHomeScreen extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
-
-  const _Header({required this.scaffoldKey});
+  const _Header();
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 32),
-          onPressed: () {
-            scaffoldKey.currentState?.openEndDrawer();
-          },
-        ),
-        const Spacer(),
-        const Icon(
+        Icon(
           Icons.tv_outlined,
           color: Color(0xFF8A5CFF),
-          size: 48,
+          size: 42,
         ),
-        const SizedBox(width: 5),
-        const Column(
+        SizedBox(width: 6),
+        Column(
           children: [
             Text(
               'EL LÍDER',
@@ -275,7 +249,7 @@ class _Header extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
-                fontSize: 24,
+                fontSize: 23,
               ),
             ),
             Text(
@@ -283,34 +257,7 @@ class _Header extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white70,
                 letterSpacing: 5,
-                fontSize: 11,
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-
-        // NOTIFICACIONES
-        Stack(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.notifications_none_rounded,
-                color: Colors.white,
-                size: 32,
-              ),
-              onPressed: () {},
-            ),
-            Positioned(
-              right: 10,
-              top: 8,
-              child: Container(
-                width: 11,
-                height: 11,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
+                fontSize: 10,
               ),
             ),
           ],
@@ -440,32 +387,42 @@ class _ModuleCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(5),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
           decoration: BoxDecoration(
             color: const Color(0xFF0D172A),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(22),
             border: Border.all(color: Colors.white10),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: color, size: 50),
-              const SizedBox(height: 1),
+              Expanded(
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 42,
+                ),
+              ),
               Text(
                 title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  height: 1,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
                 ),
               ),
-              const SizedBox(height: 1),
-              Icon(Icons.keyboard_arrow_right_rounded, color: color),
+              const SizedBox(height: 4),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: color,
+                size: 13,
+              ),
             ],
           ),
         ),
@@ -474,8 +431,137 @@ class _ModuleCard extends StatelessWidget {
   }
 }
 
-class _OperatorCard extends StatelessWidget {
+class _OperatorCard extends StatefulWidget {
   const _OperatorCard();
+
+  @override
+  State<_OperatorCard> createState() => _OperatorCardState();
+}
+
+class _OperatorCardState extends State<_OperatorCard> {
+  final SupabaseClient _supabase = Supabase.instance.client;
+
+  Timer? _timer;
+
+  bool _cargando = true;
+  String? _error;
+
+  String _operadorActual = 'Sin turno';
+  String _horarioActual = '--:-- - --:--';
+
+  String _operadorSiguiente = 'Sin próximo turno';
+  String _horarioSiguiente = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarTurnos();
+
+    _timer = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) => _cargarTurnos(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _cargarTurnos() async {
+    try {
+      final ahora = DateTime.now();
+      final desde = DateTime(
+        ahora.year,
+        ahora.month,
+        ahora.day,
+      ).subtract(const Duration(days: 1));
+
+      final hasta = DateTime(
+        ahora.year,
+        ahora.month,
+        ahora.day,
+      ).add(const Duration(days: 2));
+
+      final respuesta = await _supabase
+          .from('operador_turno')
+          .select(
+            'id, fecha, nombre, hora_inicio, hora_fin, activo',
+          )
+          .eq('activo', true)
+          .gte('fecha', _formatearFecha(desde))
+          .lte('fecha', _formatearFecha(hasta))
+          .order('fecha', ascending: true)
+          .order('hora_inicio', ascending: true);
+
+      final turnos = (respuesta as List)
+          .map(
+            (fila) => _TurnoOperador.fromMap(
+              Map<String, dynamic>.from(fila as Map),
+            ),
+          )
+          .toList();
+
+      _TurnoOperador? actual;
+      _TurnoOperador? siguiente;
+
+      for (final turno in turnos) {
+        if (!ahora.isBefore(turno.inicio) &&
+            ahora.isBefore(turno.fin)) {
+          actual = turno;
+          break;
+        }
+      }
+
+      for (final turno in turnos) {
+        if (turno.inicio.isAfter(ahora)) {
+          siguiente = turno;
+          break;
+        }
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _cargando = false;
+        _error = null;
+
+        if (actual != null) {
+          _operadorActual = actual.nombre;
+          _horarioActual =
+              '${actual.horaInicio} - ${actual.horaFin} hs';
+        } else {
+          _operadorActual = 'Sin operador asignado';
+          _horarioActual = '--:-- - --:--';
+        }
+
+        if (siguiente != null) {
+          _operadorSiguiente = siguiente.nombre;
+          _horarioSiguiente =
+              '${siguiente.horaInicio} - ${siguiente.horaFin} hs';
+        } else {
+          _operadorSiguiente = 'Sin próximo turno';
+          _horarioSiguiente = '';
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _cargando = false;
+        _error = 'No se pudo cargar';
+      });
+    }
+  }
+
+  String _formatearFecha(DateTime fecha) {
+    final year = fecha.year.toString().padLeft(4, '0');
+    final month = fecha.month.toString().padLeft(2, '0');
+    final day = fecha.day.toString().padLeft(2, '0');
+
+    return '$year-$month-$day';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -486,12 +572,11 @@ class _OperatorCard extends StatelessWidget {
         color: const Color(0xFF0D172A),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white10),
-
-      ), 
-      child: const Column(
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
+          const Center(
             child: Text(
               'OPERADOR DE TURNO',
               style: TextStyle(
@@ -501,38 +586,162 @@ class _OperatorCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 3),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: Color(0xFF6C63FF),
-                child: Icon(Icons.person, color: Colors.white, size: 34),
-              ),
-              SizedBox(width: 5),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Joaquín',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17,
+          const SizedBox(height: 1),
+          Expanded(
+            child: _cargando
+                ? const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF8A5CFF),
+                        strokeWidth: 2,
                       ),
                     ),
-                    Text(
-                      '08:00 - 16:00 hs',
-                      style: TextStyle(color: Color(0xFF9BA6C7)),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                  )
+                : Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Color(0xFF6C63FF),
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 34,
+                        ),
+                      ),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: _error != null
+                            ? Text(
+                                _error!,
+                                style: const TextStyle(
+                                  color: Color(0xFFFF4F81),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            : Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _operadorActual,
+                                    maxLines: 1,
+                                    overflow:
+                                        TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  Text(
+                                    _horarioActual,
+                                    maxLines: 1,
+                                    overflow:
+                                        TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFF9BA6C7),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 3),
+                                  Text(
+                                    'Siguiente: $_operadorSiguiente',
+                                    maxLines: 1,
+                                    overflow:
+                                        TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFF20D489),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                  if (_horarioSiguiente.isNotEmpty)
+                                    Text(
+                                      _horarioSiguiente,
+                                      style: const TextStyle(
+                                        color: Color(0xFF9BA6C7),
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                      ),
+                    ],
+                  ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TurnoOperador {
+  final String nombre;
+  final String horaInicio;
+  final String horaFin;
+  final DateTime inicio;
+  final DateTime fin;
+
+  const _TurnoOperador({
+    required this.nombre,
+    required this.horaInicio,
+    required this.horaFin,
+    required this.inicio,
+    required this.fin,
+  });
+
+  factory _TurnoOperador.fromMap(Map<String, dynamic> map) {
+    final fecha = DateTime.parse(map['fecha'].toString());
+    final horaInicio = _normalizarHora(
+      map['hora_inicio'].toString(),
+    );
+    final horaFin = _normalizarHora(
+      map['hora_fin'].toString(),
+    );
+
+    final inicio = _combinarFechaHora(fecha, horaInicio);
+    var fin = _combinarFechaHora(fecha, horaFin);
+
+    if (!fin.isAfter(inicio)) {
+      fin = fin.add(const Duration(days: 1));
+    }
+
+    return _TurnoOperador(
+      nombre: map['nombre']?.toString() ?? 'Sin nombre',
+      horaInicio: horaInicio,
+      horaFin: horaFin,
+      inicio: inicio,
+      fin: fin,
+    );
+  }
+
+  static String _normalizarHora(String hora) {
+    final partes = hora.split(':');
+
+    if (partes.length < 2) {
+      return '00:00';
+    }
+
+    return '${partes[0].padLeft(2, '0')}:'
+        '${partes[1].padLeft(2, '0')}';
+  }
+
+  static DateTime _combinarFechaHora(
+    DateTime fecha,
+    String hora,
+  ) {
+    final partes = hora.split(':');
+
+    return DateTime(
+      fecha.year,
+      fecha.month,
+      fecha.day,
+      int.parse(partes[0]),
+      int.parse(partes[1]),
     );
   }
 }
@@ -716,204 +925,6 @@ class _SensorValue extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-
-class _BottomNavBar extends StatelessWidget {
-  final int currentIndex;
-  final Function(int) onTap;
-
-  const _BottomNavBar({
-    required this.currentIndex,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF0B1220),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28),
-        ),
-        boxShadow: [
-          BoxShadow(
-            // ignore: deprecated_member_use
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 18,
-            offset: const Offset(0, -6),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: currentIndex > 3 ? 0 : currentIndex,
-          onTap: onTap,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: const Color(0xFF0B1220),
-          selectedItemColor: const Color(0xFF8A5CFF),
-          unselectedItemColor: Colors.white54,
-          selectedFontSize: 13,
-          unselectedFontSize: 12,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              label: 'Inicio',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.live_tv_rounded),
-              label: 'Canales',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.sports_soccer_outlined),
-              label: 'Eventos',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.local_pharmacy_rounded),
-              label: 'Farmacias',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.more_horiz_rounded),
-              label: 'Más',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class RightSideMenu extends StatelessWidget {
-  final Function(int) onSelectPage;
-
-  const RightSideMenu({
-    super.key,
-    required this.onSelectPage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: const Color(0xFF0B1220),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          children: [
-            const SizedBox(height: 20),
-            const ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xFF6C63FF),
-                child: Icon(Icons.live_tv_rounded, color: Colors.white),
-              ),
-              title: Text(
-                'Cabecera App',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                'Panel de control',
-                style: TextStyle(color: Colors.white54),
-              ),
-            ),
-            const SizedBox(height: 20),
-            _MenuItem(
-              icon: Icons.home_rounded,
-              title: 'Inicio',
-              onTap: () => onSelectPage(0),
-            ),
-            _MenuItem(
-              icon: Icons.live_tv_rounded,
-              title: 'Canales',
-              onTap: () => onSelectPage(1),
-            ),
-            _MenuItem(
-              icon: Icons.sports_soccer_outlined,
-              title: 'Eventos Deportivos',
-              onTap: () => onSelectPage(2),
-            ),
-            _MenuItem(
-              icon: Icons.medical_services_outlined,
-              title: 'Farmacias',
-              onTap: () => onSelectPage(3),
-            ),
-            const Divider(color: Colors.white24),
-            _MenuItem(
-              icon: Icons.sports_soccer_rounded,
-              title: 'Eventos deportivos',
-              onTap: () => Navigator.pop(context),
-            ),
-            _MenuItem(
-              icon: Icons.thermostat_rounded,
-              title: 'Temperatura',
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const SensorDashboardPage(),
-                  ),
-                );
-              },
-            ),
-            _MenuItem(
-              icon: Icons.report_problem_rounded,
-              title: 'Lista de reclamos',
-              onTap: () => Navigator.pop(context),
-            ),
-            _MenuItem(
-              icon: Icons.email_rounded,
-              title: 'Correos',
-              onTap: () => Navigator.pop(context),
-            ),
-            _MenuItem(
-              icon: Icons.article_rounded,
-              title: 'Contenidos',
-              onTap: () => Navigator.pop(context),
-            ),
-            _MenuItem(
-              icon: Icons.videocam_rounded,
-              title: 'Cámaras',
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  const _MenuItem({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-        ),
-      ),
-      onTap: onTap,
     );
   }
 }
