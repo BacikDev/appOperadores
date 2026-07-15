@@ -1,0 +1,20 @@
+[33m8d0b865[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Se ve la imagen de la camara en previo
+[33m238142f[m Se agregó los controladores para habilitar deshabilitar y resetear cada camara por separado
+[33m8a83ffe[m Se agrego el screen para las camaras de ECC
+[33mb5c1204[m Se agrego el screen de pendientes, clima y reclamos
+[33mc58956e[m Screen deportes recibe info y logo de canales, también se borra eventos de ayer
+[33m1d74034[m Se creo un screen para la grilla de canales
+[33me2b17f5[m Contiene barra de eventos deportivos en el inicio y screen para farmacias
+[33m3101e24[m Agregamos un widget con la temperatura del cabezal en la pantalla principal y al hacer tap entra en la pagina de temperatura del cabezal mostrando los detalles y un historico
+[33mec51efc[m Se agrego el appbar y el separador con icono y texto entre el carrusel y los logos de canales
+[33md503c27[m Haces tap en la foto y te lleva a una pagina fullscreen de la misma
+[33m1206095[m se agregaron fotos deco e info tecnica y boton de whatsapp
+[33mc8b4e05[m Fechas y horarios ordenados cronologicamente en la pagina de eventos deportivos y correccion de la pantalla, ahora ocupa toda la parte baja
+[33mf393078[m probado en celular y funcionando, solo falta el boton de whatsapp
+[33m0aab187[m Styles de la pagina datos de eventos terminados, solo falta el boton de whatsapp para la pagina detalles de canales
+[33md3ac8c1[m consumiendo los datos de supabase para la pagina de datos de los eventos deportivos
+[33m830032e[m Carrusel con imagenes de supabase
+[33m2421097[m carrusel con imagenes de supabase
+[33m198805d[m Los logos de los canales se traen desde Supabase
+[33m23706f8[m Carrusel terminado con imagenes locales
+[33m3384c3d[m App donde se puede ver una grilla de canales y presionando en cada logo del canal se ve su informacion
