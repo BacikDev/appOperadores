@@ -38,7 +38,7 @@ class _TransmisionesScreenState extends State<TransmisionesScreen>
     id: _StreamId.canal2,
     titulo: 'SEÑAL 1 - CANAL 2',
     descripcion: 'Transmisión principal de Canal 2',
-    url: 'http://192.168.0.244:8888/canal2/index.m3u8',
+    url: 'http://192.168.194.143:8888/canal2/index.m3u8',
     icon: Icons.live_tv_rounded,
   );
 
@@ -46,7 +46,7 @@ class _TransmisionesScreenState extends State<TransmisionesScreen>
     id: _StreamId.ecc,
     titulo: 'SEÑAL 2 - ECC',
     descripcion: 'Transmisión interna ECC',
-    url: 'http://192.168.0.106:8888/ecc/index.m3u8',
+    url: 'http://192.168.194.19:8888/ecc/index.m3u8',
     icon: Icons.connected_tv_rounded,
   );
 
