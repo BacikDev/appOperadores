@@ -3,6 +3,7 @@ import 'package:app_cabecera/controller/sensor_controller.dart';
 import 'package:app_cabecera/pages/blue_iris_screen.dart';
 import 'package:app_cabecera/pages/canales_screen.dart';
 import 'package:app_cabecera/pages/farmacias_screen.dart';
+import 'package:app_cabecera/pages/operadores_turno_screen.dart';
 import 'package:app_cabecera/pages/pendientes_screen.dart';
 import 'package:app_cabecera/pages/reclamos_screen.dart';
 import 'package:app_cabecera/pages/security_cameras_screen.dart';
@@ -184,12 +185,12 @@ class DashboardHomeScreen extends StatelessWidget {
             color: const Color(0xFF00D1C1),
             onTap: () => _openScreen(context, BlueIrisScreen()),
           ),
-          _ModuleCard(
-            icon: Icons.videocam_rounded,
-            title: 'Cámaras Seguridad',
-            color: const Color(0xFF00D1C1),
-            onTap: () => _openScreen(context, SecurityCamerasScreen()),
-          ),
+          // _ModuleCard(
+          //   icon: Icons.videocam_rounded,
+          //   title: 'Cámaras Seguridad',
+          //   color: const Color(0xFF00D1C1),
+          //   onTap: () => _openScreen(context, SecurityCamerasScreen()),
+          // ),
           _ModuleCard(
           icon: Icons.live_tv_rounded,
           title: 'En vivo',
@@ -554,6 +555,7 @@ class _OperatorCardState extends State<_OperatorCard> {
       });
     }
   }
+  
 
   String _formatearFecha(DateTime fecha) {
     final year = fecha.year.toString().padLeft(4, '0');
@@ -562,121 +564,131 @@ class _OperatorCardState extends State<_OperatorCard> {
 
     return '$year-$month-$day';
   }
+  
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 120,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0D172A),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Center(
-            child: Text(
-              'OPERADOR DE TURNO',
-              style: TextStyle(
-                color: Color(0xFF8A5CFF),
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
+Widget build(BuildContext context) {
+  return Material(
+    color: Colors.transparent,
+    child: InkWell(
+      borderRadius: BorderRadius.circular(24),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const OperadoresTurnoScreen(),
+          ),
+        );
+      },
+      child: Container(
+        height: 120,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0D172A),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.white10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Text(
+                'OPERADOR DE TURNO',
+                style: TextStyle(
+                  color: Color(0xFF8A5CFF),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 1),
-          Expanded(
-            child: _cargando
-                ? const Center(
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF8A5CFF),
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  )
-                : Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Color(0xFF6C63FF),
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 34,
+            const SizedBox(height: 1),
+            Expanded(
+              child: _cargando
+                  ? const Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF8A5CFF),
+                          strokeWidth: 2,
                         ),
                       ),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: _error != null
-                            ? Text(
-                                _error!,
-                                style: const TextStyle(
-                                  color: Color(0xFFFF4F81),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )
-                            : Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _operadorActual,
-                                    maxLines: 1,
-                                    overflow:
-                                        TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
-                                    ),
+                    )
+                  : Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 28,
+                          backgroundColor: Color(0xFF6C63FF),
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 34,
+                          ),
+                        ),
+                        const SizedBox(width: 7),
+                        Expanded(
+                          child: _error != null
+                              ? Text(
+                                  _error!,
+                                  style: const TextStyle(
+                                    color: Color(0xFFFF4F81),
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  Text(
-                                    _horarioActual,
-                                    maxLines: 1,
-                                    overflow:
-                                        TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Color(0xFF9BA6C7),
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Text(
-                                    'Siguiente: $_operadorSiguiente',
-                                    maxLines: 1,
-                                    overflow:
-                                        TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Color(0xFF20D489),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                  if (_horarioSiguiente.isNotEmpty)
+                                )
+                              : Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
                                     Text(
-                                      _horarioSiguiente,
+                                      _operadorActual,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
-                                        color: Color(0xFF9BA6C7),
-                                        fontSize: 10,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
                                       ),
                                     ),
-                                ],
-                              ),
-                      ),
-                    ],
-                  ),
-          ),
-        ],
+                                    Text(
+                                      _horarioActual,
+                                      style: const TextStyle(
+                                        color: Color(0xFF9BA6C7),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      'Siguiente: $_operadorSiguiente',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Color(0xFF20D489),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    if (_horarioSiguiente.isNotEmpty)
+                                      Text(
+                                        _horarioSiguiente,
+                                        style: const TextStyle(
+                                          color: Color(0xFF9BA6C7),
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                        ),
+                      ],
+                    ),
+            ),
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _TurnoOperador {
