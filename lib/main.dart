@@ -1,36 +1,33 @@
 import 'package:app_cabecera/custom/configurations.dart';
-import 'package:app_cabecera/pages/bottom_navigattion_bar.dart';
+import 'package:app_cabecera/pages/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
+
   await Supabase.initialize(
-  url:Configurations.mSupabaseUrl,
-  // ignore: deprecated_member_use
-  anonKey:Configurations.mSupabaseKey,
+    url: Configurations.mSupabaseUrl,
+    anonKey: Configurations.mSupabaseKey,
   );
-  WidgetsFlutterBinding.ensureInitialized();
+
   await initializeDateFormatting('es_AR', null);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget{
-  @override
-  _MyAppState createState()=> _MyAppState();
-}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-class _MyAppState extends State<MyApp>{
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainNavigationScreen(),
+      home: AnimatedSplashScreen(),
     );
   }
 }

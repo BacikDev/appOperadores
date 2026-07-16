@@ -9,7 +9,6 @@
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
 
-        <!-- Actividad principal de Flutter -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -28,10 +27,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
-        <!-- Reproductor RTSP nativo -->
         <activity
             android:name=".RtspPlayerActivity"
             android:exported="false"
@@ -41,18 +38,15 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
     </application>
 
     <queries>
-
         <package android:name="com.whatsapp" />
 
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain" />
         </intent>
-
     </queries>
 
 </manifest>

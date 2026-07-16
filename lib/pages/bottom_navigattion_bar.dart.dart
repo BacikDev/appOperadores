@@ -1,11 +1,11 @@
 import 'package:app_cabecera/controller/WeatherController.dart';
 import 'package:app_cabecera/controller/sensor_controller.dart';
+import 'package:app_cabecera/controller/connection_status_controller.dart';
 import 'package:app_cabecera/pages/blue_iris_screen.dart';
 import 'package:app_cabecera/pages/canales_screen.dart';
 import 'package:app_cabecera/pages/farmacias_screen.dart';
 import 'package:app_cabecera/pages/operadores_turno_screen.dart';
 import 'package:app_cabecera/pages/pendientes_screen.dart';
-import 'package:app_cabecera/pages/reclamos_screen.dart';
 import 'package:app_cabecera/pages/security_cameras_screen.dart';
 import 'package:app_cabecera/pages/sensor_card.dart';
 import 'package:app_cabecera/pages/sports_screen.dart';
@@ -24,14 +24,30 @@ class MainNavigationScreen extends StatefulWidget {
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
+class _MainNavigationScreenState extends State<MainNavigationScreen> with WidgetsBindingObserver {
   final SensorController sensorController = Get.put(SensorController());
   final WeatherController weatherController = Get.put(WeatherController());
+  final ConnectionStatusController connectionStatusController =
+      Get.find<ConnectionStatusController>();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     sensorController.cargarDatos();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      connectionStatusController.comprobarTodo();
+    }
   }
 
   @override
@@ -42,6 +58,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
 class DashboardHomeScreen extends StatelessWidget {
   const DashboardHomeScreen({super.key});
+
+  ConnectionStatusController get _connectionStatus =>
+      Get.find<ConnectionStatusController>();
 
   void _openScreen(BuildContext context, Widget screen) {
   Navigator.push(
@@ -84,6 +103,21 @@ class DashboardHomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const _Header(),
+              const SizedBox(height: 4),
+              Obx(() {
+                final internet =
+                    _connectionStatus.internetDisponible.value;
+                final supabase =
+                    _connectionStatus.supabaseDisponible.value;
+                final vpn = _connectionStatus.vpnActiva.value;
+
+                return _ConnectionStatusBanner(
+                  internet: internet,
+                  supabase: supabase,
+                  vpn: vpn,
+                );
+              }),
+              const SizedBox(height: 6),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,10 +160,14 @@ class DashboardHomeScreen extends StatelessWidget {
               const SizedBox(height: 6),
 
               Expanded(
-  flex: 3,
-  child: LayoutBuilder(
-    builder: (context, constraints) {
-      return GridView.count(
+                flex: 3,
+                child: Obx(() {
+                  final vpnActiva =
+                      _connectionStatus.vpnActiva.value;
+
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      return GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 3,
         crossAxisSpacing: 8,
@@ -171,18 +209,11 @@ class DashboardHomeScreen extends StatelessWidget {
             ),
           ),
           _ModuleCard(
-            icon: Icons.report_problem_rounded,
-            title: 'Reclamos',
-            color: const Color(0xFFFF4F81),
-            onTap: () => _openScreen(
-              context,
-              const ReclamosScreen(),
-            ),
-          ),
-          _ModuleCard(
             icon: Icons.videocam_rounded,
             title: 'Cámaras',
             color: const Color(0xFF00D1C1),
+            enabled: vpnActiva,
+            disabledLabel: 'VPN requerida',
             onTap: () => _openScreen(context, BlueIrisScreen()),
           ),
           // _ModuleCard(
@@ -192,24 +223,27 @@ class DashboardHomeScreen extends StatelessWidget {
           //   onTap: () => _openScreen(context, SecurityCamerasScreen()),
           // ),
           _ModuleCard(
-          icon: Icons.live_tv_rounded,
-          title: 'En vivo',
-          color: const Color(0xFF8B5CFF),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const TransmisionesScreen(),
-              ),
-            );
-          },
-        ),
+            icon: Icons.live_tv_rounded,
+            title: 'En vivo',
+            color: const Color(0xFF8B5CFF),
+            enabled: vpnActiva,
+            disabledLabel: 'VPN requerida',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const TransmisionesScreen(),
+                ),
+              );
+            },
+          ),
           
-        ],
-      );
-    },
-  ),
-),
+                        ],
+                      );
+                    },
+                  );
+                }),
+              ),
 
               const SizedBox(height: 8),
 
@@ -223,6 +257,77 @@ class DashboardHomeScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ConnectionStatusBanner extends StatelessWidget {
+  final bool internet;
+  final bool supabase;
+  final bool vpn;
+
+  const _ConnectionStatusBanner({
+    required this.internet,
+    required this.supabase,
+    required this.vpn,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+
+    final color = !internet
+        ? const Color(0xFFFF4F81)
+        : !supabase
+            ? const Color(0xFFFFA726)
+            : vpn
+                ? const Color(0xFF20D489)
+                : const Color(0xFFFFA726);
+
+    final texto = !internet
+        ? 'Sin conexión a Internet'
+        : !supabase
+            ? 'Supabase no disponible'
+            : vpn
+                ? 'Red ECC disponible'
+                : 'VPN apagada · Cámaras y transmisiones deshabilitadas';
+
+    final icono = !internet
+        ? Icons.wifi_off_rounded
+        : vpn
+            ? Icons.shield_rounded
+            : Icons.vpn_key_off_rounded;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 11,
+        vertical: 7,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: color.withValues(alpha: 0.30),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(icono, color: color, size: 16),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Text(
+              texto,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -375,12 +480,16 @@ class _ModuleCard extends StatelessWidget {
   final String title;
   final Color color;
   final VoidCallback onTap;
+  final bool enabled;
+  final String? disabledLabel;
 
   const _ModuleCard({
     required this.icon,
     required this.title,
     required this.color,
     required this.onTap,
+    this.enabled = true,
+    this.disabledLabel,
   });
 
   @override
@@ -389,8 +498,26 @@ class _ModuleCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
-        onTap: onTap,
-        child: Container(
+        onTap: enabled
+            ? onTap
+            : () {
+                Get.snackbar(
+                  'VPN ZeroTier requerida',
+                  'Este módulo no está habilitado porque la VPN no está activa.',
+                  snackPosition: SnackPosition.TOP,
+                  margin: const EdgeInsets.all(12),
+                  backgroundColor: const Color(0xFF0D172A),
+                  colorText: Colors.white,
+                  icon: const Icon(
+                    Icons.vpn_key_off_rounded,
+                    color: Color(0xFFFFA726),
+                  ),
+                );
+              },
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 250),
+          opacity: enabled ? 1 : 0.48,
+          child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
           decoration: BoxDecoration(
             color: const Color(0xFF0D172A),
@@ -419,13 +546,24 @@ class _ModuleCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: color,
-                size: 13,
-              ),
+              if (enabled)
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: color,
+                  size: 13,
+                )
+              else
+                Text(
+                  disabledLabel ?? 'No disponible',
+                  style: const TextStyle(
+                    color: Color(0xFFFFA726),
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
             ],
           ),
+        ),
         ),
       ),
     );
